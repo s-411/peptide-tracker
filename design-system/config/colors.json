@@ -1,0 +1,95 @@
+{
+  "name": "Design System Color Palette",
+  "description": "Complete color system for application",
+  "version": "1.0.0",
+  "colors": {
+    "primary": {
+      "red": {
+        "hex": "#ff3427",
+        "rgb": "rgb(0, 161, 254)",
+        "hsl": "hsl(202, 100%, 50%)",
+        "usage": "Primary brand color, CTAs, active states, highlights",
+        "cssVar": "--color-primary",
+        "tailwindClass": "bg-primary, text-primary, border-primary"
+      }
+    },
+    "neutrals": {
+      "dark": {
+        "hex": "#1f1f1f",
+        "rgb": "rgb(31, 31, 31)",
+        "hsl": "hsl(0, 0%, 12%)",
+        "usage": "Main background, primary surface",
+        "cssVar": "--color-dark",
+        "tailwindClass": "bg-dark, text-dark, border-dark"
+      },
+      "dark2": {
+        "hex": "#2a2a2a",
+        "rgb": "rgb(42, 42, 42)",
+        "hsl": "hsl(0, 0%, 16%)",
+        "usage": "Elevated surfaces, cards, modals",
+        "cssVar": "--color-dark2",
+        "tailwindClass": "bg-dark2, text-dark2, border-dark2"
+      },
+      "gray": {
+        "hex": "#ababab",
+        "rgb": "rgb(171, 171, 171)",
+        "hsl": "hsl(0, 0%, 67%)",
+        "usage": "Secondary text, borders, placeholders, inactive states",
+        "cssVar": "--color-gray",
+        "tailwindClass": "bg-gray, text-gray, border-gray"
+      },
+      "white": {
+        "hex": "#ffffff",
+        "rgb": "rgb(255, 255, 255)",
+        "hsl": "hsl(0, 0%, 100%)",
+        "usage": "Primary text, icons, high contrast elements",
+        "cssVar": "--color-white",
+        "tailwindClass": "bg-white, text-white, border-white"
+      }
+    },
+    "semantic": {
+      "error": {
+        "hex": "#ff6b6b",
+        "rgb": "rgb(255, 107, 107)",
+        "hsl": "hsl(0, 100%, 71%)",
+        "usage": "Error states, validation messages",
+        "cssVar": "--color-error",
+        "tailwindClass": "text-error"
+      },
+      "success": {
+        "hex": "#51cf66",
+        "rgb": "rgb(81, 207, 102)",
+        "hsl": "hsl(130, 58%, 56%)",
+        "usage": "Success states, confirmations",
+        "cssVar": "--color-success",
+        "tailwindClass": "text-success"
+      },
+      "warning": {
+        "hex": "#00A1FE",
+        "rgb": "rgb(0, 161, 254)",
+        "hsl": "hsl(202, 100%, 50%)",
+        "usage": "Warning states (uses primary blue)",
+        "cssVar": "--color-mm-blue",
+        "tailwindClass": "text-warning"
+      }
+    }
+  },
+  "colorMixing": {
+    "description": "Dynamic color mixing using CSS color-mix() for transparency effects",
+    "examples": {
+      "glassMorphism": "color-mix(in srgb, var(--color-dark) 80%, transparent)",
+      "subtleBorders": "color-mix(in srgb, var(--color-gray) 20%, transparent)",
+      "hoverStates": "color-mix(in srgb, var(--color-mm-blue) 30%, transparent)",
+      "focusRings": "color-mix(in srgb, var(--color-mm-blue) 20%, transparent)"
+    }
+  },
+  "accessibility": {
+    "contrastRatios": {
+      "yellowOnDark": "AAA compliant",
+      "whiteOnDark": "AAA compliant",
+      "grayOnDark": "AA compliant",
+      "darkOnYellow": "AAA compliant"
+    },
+    "colorBlindness": "Yellow primary ensures visibility for most color vision deficiencies"
+  }
+}
