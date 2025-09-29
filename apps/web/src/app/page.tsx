@@ -1,7 +1,15 @@
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
+export default async function Home() {
+  const user = await currentUser();
+
+  // If user is signed in, redirect to dashboard
+  if (user) {
+    redirect('/dashboard');
+  }
   return (
     <div className="min-h-screen bg-dark text-white">
       <header className="bg-dark2 border-b border-gray/20">
