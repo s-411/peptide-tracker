@@ -2,11 +2,19 @@ import { UserButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { DatabaseService } from '@/lib/database';
+import { WeeklySummaryWidget } from '@/components/dashboard/WeeklySummaryWidget';
 
 export default async function DashboardPage() {
   const user = await currentUser();
 
   if (!user) {
+    redirect('/auth/sign-in');
+  }
+
+  // Get user's current record
+  const userRecord = await DatabaseService.getUserByClerkId(user.id);
+  if (!userRecord) {
     redirect('/auth/sign-in');
   }
 
@@ -59,6 +67,11 @@ export default async function DashboardPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
+        {/* Weekly Summary Widget */}
+        <div className="mb-8">
+          <WeeklySummaryWidget userId={userRecord.id} />
+        </div>
+
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div className="bg-dark2 p-6 rounded-card border border-gray/20">
             <h2 className="text-h4 font-heading mb-4 text-primary">

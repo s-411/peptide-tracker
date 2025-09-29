@@ -191,3 +191,22 @@ export interface WellnessMetricFilters {
   dateRange?: DateRange;
   injectionId?: string;
 }
+
+// Weekly summary types
+export interface DailyInjectionSummary {
+  date: Date;
+  injections: Injection[];
+  totalDoses: number;
+  uniquePeptides: string[];
+  sites: InjectionLocation[];
+}
+
+export interface WeeklySummaryData {
+  totalInjections: number;
+  uniquePeptides: string[];
+  injectionSites: InjectionLocation[];
+  dailyActivity: DailyInjectionSummary[];
+  missedDoses: Date[];
+  adherenceScore: number;
+  weeklyTrend: 'improving' | 'declining' | 'stable';
+}

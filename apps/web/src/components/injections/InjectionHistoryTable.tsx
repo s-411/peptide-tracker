@@ -182,12 +182,20 @@ export function InjectionHistoryTable({
                     </div>
                   </td>
                   <td className="p-4">
-                    <Link
-                      href={`/injections/${injection.id}/edit`}
-                      className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
-                    >
-                      Edit
-                    </Link>
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/injections/${injection.id}`}
+                        className="text-gray hover:text-white text-sm font-medium transition-colors"
+                      >
+                        View
+                      </Link>
+                      <Link
+                        href={`/injections/${injection.id}/edit`}
+                        className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
+                      >
+                        Edit
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -209,12 +217,20 @@ export function InjectionHistoryTable({
                   {formatDateTime(injection.timestamp)}
                 </div>
               </div>
-              <Link
-                href={`/injections/${injection.id}/edit`}
-                className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
-              >
-                Edit
-              </Link>
+              <div className="flex gap-2">
+                <Link
+                  href={`/injections/${injection.id}`}
+                  className="text-gray hover:text-white text-sm font-medium transition-colors"
+                >
+                  View
+                </Link>
+                <Link
+                  href={`/injections/${injection.id}/edit`}
+                  className="text-primary hover:text-primary-hover text-sm font-medium transition-colors"
+                >
+                  Edit
+                </Link>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-sm">

@@ -128,7 +128,7 @@ export function PeptideFilters({ filters, onFiltersChange }: PeptideFiltersProps
         <div className="flex flex-wrap gap-2">
           {filters.search && (
             <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/20 text-primary rounded text-small">
-              Search: "{filters.search}"
+              Search: &ldquo;{filters.search}&rdquo;
               <button
                 onClick={() => handleSearchChange('')}
                 className="hover:text-primary-hover"

@@ -16,7 +16,7 @@ export const createInjectionSchema = z.object({
   notes: z.string().optional(),
 });
 
-export const updateInjectionSchema = createInjectionSchema.extend({
+export const updateInjectionSchema = createInjectionSchema.partial().extend({
   id: z.string().uuid('Invalid injection ID'),
 });
 

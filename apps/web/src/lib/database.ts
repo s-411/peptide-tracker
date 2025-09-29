@@ -10,7 +10,8 @@ import type {
   PeptideFilters,
   WellnessMetricFilters,
   PaginationOptions,
-  DatabaseError,
+  WeeklySummaryData,
+  DailyInjectionSummary,
 } from '@/types/database';
 
 export class DatabaseService {
@@ -257,6 +258,98 @@ export class DatabaseService {
     }
   }
 
+  static async getInjectionById(injectionId: string, userId: string): Promise<Injection | null> {
+    try {
+      const { data, error } = await supabase
+        .from('injections')
+        .select(`
+          *,
+          peptides:peptide_id(name, category)
+        `)
+        .eq('id', injectionId)
+        .eq('user_id', userId)
+        .single();
+
+      if (error) throw error;
+      return this.mapInjectionFromDb(data);
+    } catch {
+      // Error getting injection
+      return null;
+    }
+  }
+
+  static async updateInjection(
+    injectionId: string,
+    updates: Partial<Omit<Injection, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>
+  ): Promise<Injection | null> {
+    try {
+      const { data, error } = await supabase
+        .from('injections')
+        .update({
+          peptide_id: updates.peptideId,
+          dose: updates.dose,
+          dose_unit: updates.doseUnit,
+          injection_site: updates.injectionSite,
+          timestamp: updates.timestamp?.toISOString(),
+          notes: updates.notes,
+          protocol_id: updates.protocolId,
+        })
+        .eq('id', injectionId)
+        .select(`
+          *,
+          peptides:peptide_id(name, category)
+        `)
+        .single();
+
+      if (error) throw error;
+      return this.mapInjectionFromDb(data);
+    } catch {
+      // Error updating injection
+      return null;
+    }
+  }
+
+  static async deleteInjection(injectionId: string, userId: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('injections')
+        .delete()
+        .eq('id', injectionId)
+        .eq('user_id', userId);
+
+      if (error) throw error;
+      return true;
+    } catch {
+      // Error deleting injection
+      return false;
+    }
+  }
+
+  static async duplicateInjection(injectionId: string, userId: string): Promise<Injection | null> {
+    try {
+      // First get the original injection
+      const original = await this.getInjectionById(injectionId, userId);
+      if (!original) return null;
+
+      // Create a duplicate with new timestamp
+      const duplicate = await this.createInjection({
+        userId: original.userId,
+        peptideId: original.peptideId,
+        dose: original.dose,
+        doseUnit: original.doseUnit,
+        injectionSite: original.injectionSite,
+        timestamp: new Date(), // Use current time for duplicate
+        notes: original.notes ? `${original.notes} (duplicated)` : 'Duplicated injection',
+        protocolId: original.protocolId,
+      });
+
+      return duplicate;
+    } catch {
+      // Error duplicating injection
+      return null;
+    }
+  }
+
   // Protocol operations
   static async getUserProtocols(userId: string): Promise<Protocol[]> {
     try {
@@ -404,5 +497,137 @@ export class DatabaseService {
       createdAt: new Date(data.created_at),
       updatedAt: new Date(data.updated_at),
     };
+  }
+
+  static async getWeeklySummary(userId: string): Promise<WeeklySummaryData | null> {
+    try {
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - 6);
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(23, 59, 59, 999);
+
+      // Get injections for the last 7 days
+      const { data: injections, error } = await supabase
+        .from('injections')
+        .select(`
+          *,
+          peptides!inner(name, category)
+        `)
+        .eq('user_id', userId)
+        .gte('timestamp', startDate.toISOString())
+        .lte('timestamp', endDate.toISOString())
+        .order('timestamp', { ascending: false });
+
+      if (error) throw error;
+
+      const mappedInjections = injections.map(this.mapInjectionFromDb);
+
+      // Get active protocols for adherence calculation
+      const { data: protocols } = await supabase
+        .from('protocols')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_active', true);
+
+      const activeProtocols = protocols?.map(this.mapProtocolFromDb) || [];
+
+      // Build daily activity summary
+      const dailyActivity: DailyInjectionSummary[] = [];
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(startDate);
+        date.setDate(startDate.getDate() + i);
+        date.setHours(0, 0, 0, 0);
+
+        const dayInjections = mappedInjections.filter(inj => {
+          const injDate = new Date(inj.timestamp);
+          injDate.setHours(0, 0, 0, 0);
+          return injDate.getTime() === date.getTime();
+        });
+
+        dailyActivity.push({
+          date,
+          injections: dayInjections,
+          totalDoses: dayInjections.length,
+          uniquePeptides: [...new Set(dayInjections.map(inj => inj.peptideId))],
+          sites: [...new Set(dayInjections.map(inj => inj.injectionSite.location))],
+        });
+      }
+
+      // Calculate missed doses based on protocols
+      const missedDoses: Date[] = [];
+      for (const protocol of activeProtocols) {
+        const frequency = protocol.schedule.frequency;
+        let expectedDays: number[] = [];
+
+        // Calculate expected injection days based on frequency
+        switch (frequency) {
+          case 'daily':
+            expectedDays = [0, 1, 2, 3, 4, 5, 6];
+            break;
+          case 'twice_daily':
+            expectedDays = [0, 1, 2, 3, 4, 5, 6];
+            break;
+          case 'weekly':
+            expectedDays = [0];
+            break;
+          case 'twice_weekly':
+            expectedDays = [0, 3];
+            break;
+        }
+
+        for (const dayIndex of expectedDays) {
+          const expectedDate = new Date(startDate);
+          expectedDate.setDate(startDate.getDate() + dayIndex);
+
+          const hasInjection = dailyActivity[dayIndex].injections.some(
+            inj => inj.peptideId === protocol.peptideId
+          );
+
+          if (!hasInjection) {
+            missedDoses.push(expectedDate);
+          }
+        }
+      }
+
+      // Calculate adherence score
+      const totalExpectedDoses = activeProtocols.reduce((total, protocol) => {
+        switch (protocol.schedule.frequency) {
+          case 'daily': return total + 7;
+          case 'twice_daily': return total + 14;
+          case 'weekly': return total + 1;
+          case 'twice_weekly': return total + 2;
+          default: return total;
+        }
+      }, 0);
+
+      const adherenceScore = totalExpectedDoses > 0
+        ? Math.round(((totalExpectedDoses - missedDoses.length) / totalExpectedDoses) * 100)
+        : 100;
+
+      // Calculate weekly trend
+      const firstHalf = dailyActivity.slice(0, 3).reduce((sum, day) => sum + day.totalDoses, 0);
+      const secondHalf = dailyActivity.slice(4, 7).reduce((sum, day) => sum + day.totalDoses, 0);
+      let weeklyTrend: 'improving' | 'declining' | 'stable' = 'stable';
+
+      if (secondHalf > firstHalf) {
+        weeklyTrend = 'improving';
+      } else if (secondHalf < firstHalf) {
+        weeklyTrend = 'declining';
+      }
+
+      return {
+        totalInjections: mappedInjections.length,
+        uniquePeptides: [...new Set(mappedInjections.map(inj => inj.peptideId))],
+        injectionSites: [...new Set(mappedInjections.map(inj => inj.injectionSite.location))],
+        dailyActivity,
+        missedDoses,
+        adherenceScore,
+        weeklyTrend,
+      };
+    } catch (error) {
+      console.error('Error fetching weekly summary:', error);
+      return null;
+    }
   }
 }

@@ -2,12 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, type SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { DatabaseService } from '@/lib/database';
-import { createPeptideSchema, type CreatePeptideInput } from '@/lib/validations/peptide';
 import type { Peptide } from '@/types/database';
 
 interface PeptideFormProps {
@@ -54,7 +52,6 @@ export function PeptideForm({ mode, peptide }: PeptideFormProps) {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm({
     defaultValues: peptide ? {
       name: peptide.name,
