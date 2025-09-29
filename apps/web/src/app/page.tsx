@@ -84,24 +84,21 @@ export default function Home() {
 
         <div className="grid gap-8 md:grid-cols-3 mb-12">
           <div className="bg-dark2 p-6 rounded-card border border-gray/20 text-center">
-            <div className="text-primary text-4xl mb-4">🧬</div>
-            <h3 className="text-h4 font-heading mb-3">Precise Tracking</h3>
+            <h3 className="text-h4 font-heading mb-3 text-primary">Precise Tracking</h3>
             <p className="text-gray">
               Log peptide intake, dosages, and timing with scientific precision and accuracy.
             </p>
           </div>
 
           <div className="bg-dark2 p-6 rounded-card border border-gray/20 text-center">
-            <div className="text-success text-4xl mb-4">📊</div>
-            <h3 className="text-h4 font-heading mb-3">Advanced Analytics</h3>
+            <h3 className="text-h4 font-heading mb-3 text-success">Advanced Analytics</h3>
             <p className="text-gray">
               Visualize patterns, trends, and insights from your peptide tracking data.
             </p>
           </div>
 
           <div className="bg-dark2 p-6 rounded-card border border-gray/20 text-center">
-            <div className="text-warning text-4xl mb-4">🔒</div>
-            <h3 className="text-h4 font-heading mb-3">Secure & Private</h3>
+            <h3 className="text-h4 font-heading mb-3 text-warning">Secure & Private</h3>
             <p className="text-gray">
               Your health data is encrypted and protected with enterprise-grade security.
             </p>
@@ -115,21 +112,21 @@ export default function Home() {
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="text-primary">✓</div>
+                <div className="text-primary font-bold">•</div>
                 <div>
                   <h4 className="font-heading text-white mb-1">Scientific Accuracy</h4>
                   <p className="text-gray text-small">Built for precision tracking with detailed logging capabilities.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="text-primary">✓</div>
+                <div className="text-primary font-bold">•</div>
                 <div>
                   <h4 className="font-heading text-white mb-1">Data Insights</h4>
                   <p className="text-gray text-small">Comprehensive analytics to understand your peptide patterns.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="text-primary">✓</div>
+                <div className="text-primary font-bold">•</div>
                 <div>
                   <h4 className="font-heading text-white mb-1">Easy to Use</h4>
                   <p className="text-gray text-small">Intuitive interface designed for daily use by professionals.</p>
@@ -138,21 +135,21 @@ export default function Home() {
             </div>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="text-primary">✓</div>
+                <div className="text-primary font-bold">•</div>
                 <div>
                   <h4 className="font-heading text-white mb-1">Secure Storage</h4>
                   <p className="text-gray text-small">Your data is encrypted and stored with bank-level security.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="text-primary">✓</div>
+                <div className="text-primary font-bold">•</div>
                 <div>
                   <h4 className="font-heading text-white mb-1">Cross-Platform</h4>
                   <p className="text-gray text-small">Access your data from any device, anywhere, anytime.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="text-primary">✓</div>
+                <div className="text-primary font-bold">•</div>
                 <div>
                   <h4 className="font-heading text-white mb-1">Export Data</h4>
                   <p className="text-gray text-small">Export your tracking data for analysis or sharing with professionals.</p>

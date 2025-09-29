@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;600;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   /* Core Colors from design system */
@@ -36,59 +38,6 @@
   --foreground: var(--color-white);
 }
 
-@theme inline {
-  /* Colors */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-
-  /* Extend Tailwind colors */
-  --color-primary: #ff3427;
-  --color-primary-hover: #e62e22;
-  --color-dark: #1f1f1f;
-  --color-dark2: #2a2a2a;
-  --color-gray: #ababab;
-  --color-white: #ffffff;
-  --color-error: #ff6b6b;
-  --color-success: #51cf66;
-  --color-warning: #00A1FE;
-
-  /* Font families */
-  --font-sans: var(--font-family-body);
-  --font-heading: var(--font-family-heading);
-
-  /* Font sizes following design token scale */
-  --font-size-h1: 2.5rem;
-  --font-size-h2: 2rem;
-  --font-size-h3: 1.5rem;
-  --font-size-h4: 1.25rem;
-  --font-size-h5: 1rem;
-  --font-size-h6: 0.875rem;
-  --font-size-body: 1rem;
-  --font-size-small: 0.875rem;
-  --font-size-xs: 0.75rem;
-
-  /* Line heights */
-  --line-height-heading: 1.2;
-  --line-height-body: 1.6;
-
-  /* Letter spacing */
-  --letter-spacing-heading: -0.02em;
-  --letter-spacing-body: 0;
-  --letter-spacing-uppercase: 0.05em;
-
-  /* Border radius */
-  --radius-button: 100px;
-  --radius-card: 0.5rem;
-  --radius-input: 0.5rem;
-  --radius-modal: 0.5rem;
-
-  /* Spacing (extends Tailwind defaults) */
-  --spacing-button-px: 1.5rem;
-  --spacing-button-py: 0.75rem;
-  --spacing-input: 0.75rem;
-  --spacing-card: 1.5rem;
-  --spacing-modal: 2rem;
-}
 
 * {
   margin: 0;
