@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, Download, Filter, TrendingUp, Target, Clock, MapPin } from 'lucide-react';
+import { Download, TrendingUp, Target, Clock, MapPin } from 'lucide-react';
 import { ComprehensiveAnalytics, AnalyticsFilters } from '@/types/database';
 import { AdherenceChart } from './AdherenceChart';
 import { InjectionSiteMap } from './InjectionSiteMap';
@@ -14,7 +14,7 @@ interface AnalyticsDashboardProps {
   userId: string;
 }
 
-export function AnalyticsDashboard({ userId }: AnalyticsDashboardProps) {
+export function AnalyticsDashboard({ }: AnalyticsDashboardProps) {
   const [analytics, setAnalytics] = useState<ComprehensiveAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

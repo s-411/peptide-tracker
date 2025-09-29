@@ -31,7 +31,6 @@ export function InjectionSiteMap({ data }: InjectionSiteMapProps) {
     );
   }
 
-  const totalUsage = data.reduce((sum, site) => sum + site.usageCount, 0);
   const overusedSites = data.filter(site => site.overused);
   const wellRotatedSites = data.filter(site => !site.overused && site.usageCount > 0);
 
@@ -59,10 +58,10 @@ export function InjectionSiteMap({ data }: InjectionSiteMapProps) {
                 <div className="flex items-center gap-2">
                   <span className="text-white font-medium">{displayName}</span>
                   {site.overused && (
-                    <AlertTriangle className="w-4 h-4 text-warning" title="Potentially overused" />
+                    <AlertTriangle className="w-4 h-4 text-warning" />
                   )}
                   {site.recommendedRotation && (
-                    <CheckCircle className="w-4 h-4 text-success" title="Good rotation site" />
+                    <CheckCircle className="w-4 h-4 text-success" />
                   )}
                 </div>
                 <div className="text-right">

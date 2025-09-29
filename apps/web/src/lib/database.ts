@@ -17,8 +17,6 @@ import type {
   ProtocolProgress,
   WeeklyProgressTrend,
   Alert,
-  AlertType,
-  AlertSeverity,
   NotificationPreferences,
   InjectionSiteUsage,
   DoseAlertContext,
@@ -1034,16 +1032,19 @@ export class DatabaseService {
   }
 
   // Alert and Notification operations
-  static async getUserAlerts(userId: string, includeRead: boolean = false): Promise<Alert[]> {
+  static async getUserAlerts(userId: string, includeRead: boolean = false, activeOnly: boolean = true): Promise<Alert[]> {
     try {
       let query = supabase
         .from('alerts')
         .select('*')
-        .eq('user_id', userId)
-        .eq('is_dismissed', false);
+        .eq('user_id', userId);
 
       if (!includeRead) {
         query = query.eq('is_read', false);
+      }
+
+      if (activeOnly) {
+        query = query.eq('is_dismissed', false);
       }
 
       // Filter out expired alerts
@@ -1207,9 +1208,11 @@ export class DatabaseService {
 
         if (!hasRecentAlert) {
           if (progress.progressPercentage >= 100) {
-            alerts.push(await this.createDoseLimitExceededAlert(userId, context));
+            const alert = await this.createDoseLimitExceededAlert(userId, context);
+            if (alert) alerts.push(alert);
           } else if (progress.progressPercentage >= threshold) {
-            alerts.push(await this.createDoseLimitWarningAlert(userId, context));
+            const alert = await this.createDoseLimitWarningAlert(userId, context);
+            if (alert) alerts.push(alert);
           }
         }
       }
@@ -1267,7 +1270,8 @@ export class DatabaseService {
                 gracePeriodExpired: true
               };
 
-              alerts.push(await this.createMissedDoseAlert(userId, context));
+              const alert = await this.createMissedDoseAlert(userId, context);
+              if (alert) alerts.push(alert);
             }
           }
         }
@@ -1297,7 +1301,8 @@ export class DatabaseService {
         );
 
         if (!hasRecentAlert) {
-          alerts.push(await this.createSiteRotationAlert(userId, site, maxConsecutive));
+          const alert = await this.createSiteRotationAlert(userId, site, maxConsecutive);
+          if (alert) alerts.push(alert);
         }
       }
     }
@@ -1328,9 +1333,11 @@ export class DatabaseService {
 
           if (!hasRecentAlert) {
             if (milestone === 100) {
-              alerts.push(await this.createProtocolCompleteAlert(userId, progress));
+              const alert = await this.createProtocolCompleteAlert(userId, progress);
+              if (alert) alerts.push(alert);
             } else {
-              alerts.push(await this.createProtocolMilestoneAlert(userId, progress, milestone));
+              const alert = await this.createProtocolMilestoneAlert(userId, progress, milestone);
+              if (alert) alerts.push(alert);
             }
           }
         }
@@ -1590,7 +1597,7 @@ export class DatabaseService {
       };
 
       // Get user protocols
-      const protocols = await this.getUserProtocols(userId);
+      const protocols = await this.getProtocols(userId);
       const results: ProtocolAdherenceData[] = [];
 
       for (const protocol of protocols) {
@@ -1867,7 +1874,7 @@ export class DatabaseService {
     filters?: AnalyticsFilters
   ): Promise<DoseVarianceAnalytics[]> {
     try {
-      const protocols = await this.getUserProtocols(userId);
+      const protocols = await this.getProtocols(userId);
       const results: DoseVarianceAnalytics[] = [];
 
       const dateRange = filters?.dateRange || {
@@ -2007,7 +2014,7 @@ export class DatabaseService {
 
     // Calculate current streak
     let streakDays = 0;
-    let currentDate = new Date();
+    const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
 
     for (let i = sortedInjections.length - 1; i >= 0; i--) {
@@ -2018,7 +2025,8 @@ export class DatabaseService {
 
       if (daysDiff <= 1) {
         streakDays++;
-        currentDate.setDate(currentDate.getDate() - 1);
+        const nextDate = new Date(currentDate);
+        nextDate.setDate(nextDate.getDate() - 1);
       } else {
         break;
       }

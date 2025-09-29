@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Bell, Save, Settings, Mail, Smartphone } from 'lucide-react';
-import { NotificationPreferences } from '@/types/database';
+import { NotificationPreferences, NotificationMethod } from '@/types/database';
 
 interface NotificationSettingsProps {
   userId: string;
@@ -38,7 +38,7 @@ const DEFAULT_PREFERENCES: NotificationPreferences = {
   pushNotifications: false
 };
 
-const DELIVERY_METHOD_OPTIONS = [
+const DELIVERY_METHOD_OPTIONS: { value: NotificationMethod; label: string; icon: any }[] = [
   { value: 'in_app', label: 'In-App', icon: Bell },
   { value: 'email', label: 'Email', icon: Mail },
   { value: 'push', label: 'Push', icon: Smartphone }
@@ -106,8 +106,11 @@ export function NotificationSettings({ }: NotificationSettingsProps) {
     });
   };
 
-  const toggleDeliveryMethod = (alertType: string, method: string) => {
-    const currentMethods = preferences[alertType as keyof NotificationPreferences]?.deliveryMethods || [];
+  const toggleDeliveryMethod = (alertType: string, method: NotificationMethod) => {
+    const preference = preferences[alertType as keyof NotificationPreferences];
+    const currentMethods = (preference && typeof preference === 'object' && 'deliveryMethods' in preference)
+      ? preference.deliveryMethods || []
+      : [];
     const newMethods = currentMethods.includes(method)
       ? currentMethods.filter(m => m !== method)
       : [...currentMethods, method];
