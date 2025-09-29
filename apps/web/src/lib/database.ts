@@ -211,6 +211,12 @@ export class DatabaseService {
         query = query.eq('injection_site->location', filters.injectionSite);
       }
 
+      if (filters?.search) {
+        // Search across notes and peptide names using ilike for case-insensitive partial matching
+        const searchTerm = `%${filters.search}%`;
+        query = query.or(`notes.ilike.${searchTerm},peptides.name.ilike.${searchTerm}`);
+      }
+
       if (pagination) {
         query = query
           .range(pagination.offset, pagination.offset + pagination.limit - 1);

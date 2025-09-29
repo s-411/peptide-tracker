@@ -172,6 +172,7 @@ export interface InjectionFilters {
   peptideId?: string;
   dateRange?: DateRange;
   injectionSite?: InjectionLocation;
+  search?: string;
 }
 
 export interface PeptideFilters {

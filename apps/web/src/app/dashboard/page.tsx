@@ -26,6 +26,18 @@ export default async function DashboardPage() {
               Peptides
             </Link>
             <Link
+              href="/injections/log"
+              className="text-gray hover:text-white transition-colors"
+            >
+              Log Injection
+            </Link>
+            <Link
+              href="/injections/history"
+              className="text-gray hover:text-white transition-colors"
+            >
+              History
+            </Link>
+            <Link
               href="/profile"
               className="text-gray hover:text-white transition-colors"
             >
@@ -55,9 +67,12 @@ export default async function DashboardPage() {
             <p className="text-gray mb-4">
               Quickly log your peptide intake and track your progress.
             </p>
-            <button className="bg-primary text-dark px-4 py-2 rounded-button font-bold hover:bg-primary-hover transition-colors">
+            <Link
+              href="/injections/log"
+              className="bg-primary text-dark px-4 py-2 rounded-button font-bold hover:bg-primary-hover transition-colors inline-block text-center"
+            >
               Log Peptide
-            </button>
+            </Link>
           </div>
 
           <div className="bg-dark2 p-6 rounded-card border border-gray/20">
@@ -67,9 +82,12 @@ export default async function DashboardPage() {
             <p className="text-gray mb-4">
               View your recent peptide logs and tracking history.
             </p>
-            <button className="bg-transparent text-white border border-gray px-4 py-2 rounded-button font-bold hover:bg-gray/10 transition-colors">
+            <Link
+              href="/injections/history"
+              className="bg-transparent text-white border border-gray px-4 py-2 rounded-button font-bold hover:bg-gray/10 transition-colors inline-block text-center"
+            >
               View History
-            </button>
+            </Link>
           </div>
 
           <div className="bg-dark2 p-6 rounded-card border border-gray/20">
