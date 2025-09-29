@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;600;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Core Colors from design system */
+  --color-primary: #ff3427;
+  --color-primary-hover: #e62e22;
+
+  /* Neutrals */
+  --color-dark: #1f1f1f;
+  --color-dark2: #2a2a2a;
+  --color-gray: #ababab;
+  --color-white: #ffffff;
+
+  /* Semantic */
+  --color-error: #ff6b6b;
+  --color-success: #51cf66;
+  --color-warning: #00A1FE;
+
+  /* Typography */
+  --font-family-heading: 'Antonio', 'Arial Black', sans-serif;
+  --font-family-body: 'Poppins', 'Inter', system-ui, sans-serif;
+
+  /* Border Radius */
+  --radius-primary: 100px;
+  --radius-card: 0.5rem;
+  --radius-input: 0.5rem;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Default to dark theme */
+  --background: var(--color-dark);
+  --foreground: var(--color-white);
+}
+
+@theme inline {
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Extend Tailwind colors */
+  --color-primary: #ff3427;
+  --color-primary-hover: #e62e22;
+  --color-dark: #1f1f1f;
+  --color-dark2: #2a2a2a;
+  --color-gray: #ababab;
+  --color-white: #ffffff;
+  --color-error: #ff6b6b;
+  --color-success: #51cf66;
+  --color-warning: #00A1FE;
+
+  /* Font families */
+  --font-sans: var(--font-family-body);
+  --font-heading: var(--font-family-heading);
+
+  /* Font sizes following design token scale */
+  --font-size-h1: 2.5rem;
+  --font-size-h2: 2rem;
+  --font-size-h3: 1.5rem;
+  --font-size-h4: 1.25rem;
+  --font-size-h5: 1rem;
+  --font-size-h6: 0.875rem;
+  --font-size-body: 1rem;
+  --font-size-small: 0.875rem;
+  --font-size-xs: 0.75rem;
+
+  /* Line heights */
+  --line-height-heading: 1.2;
+  --line-height-body: 1.6;
+
+  /* Letter spacing */
+  --letter-spacing-heading: -0.02em;
+  --letter-spacing-body: 0;
+  --letter-spacing-uppercase: 0.05em;
+
+  /* Border radius */
+  --radius-button: 100px;
+  --radius-card: 0.5rem;
+  --radius-input: 0.5rem;
+  --radius-modal: 0.5rem;
+
+  /* Spacing (extends Tailwind defaults) */
+  --spacing-button-px: 1.5rem;
+  --spacing-button-py: 0.75rem;
+  --spacing-input: 0.75rem;
+  --spacing-card: 1.5rem;
+  --spacing-modal: 2rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-family-body);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Heading styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-heading);
+  font-weight: 600;
+}
+
+h1 { font-size: var(--font-size-h1); }
+h2 { font-size: var(--font-size-h2); }
+h3 { font-size: var(--font-size-h3); }
+h4 { font-size: var(--font-size-h4); }
+h5 { font-size: var(--font-size-h5); }
+h6 { font-size: var(--font-size-h6); }
+
+/* Animations from design tokens */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Glass morphism effect from design tokens */
+.glass {
+  background: color-mix(in srgb, var(--color-dark) 80%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid color-mix(in srgb, var(--color-gray) 20%, transparent);
+}
+
+/* Focus states */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-dark);
+}
