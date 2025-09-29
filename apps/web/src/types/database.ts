@@ -95,24 +95,41 @@ export type InjectionLocation =
 export interface Protocol {
   id: string;
   userId: string;
-  name: string;
-  description: string | null;
   peptideId: string;
-  schedule: ProtocolSchedule;
+  name: string;
+  weeklyTarget?: number;
+  dailyTarget?: number;
+  scheduleType: ProtocolScheduleType;
+  scheduleConfig: ProtocolScheduleConfig;
+  startDate: Date;
+  endDate?: Date;
+  isTemplate: boolean;
+  templateName?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface ProtocolSchedule {
-  frequency: DoseFrequency;
-  dose: number;
-  doseUnit: DoseUnit;
-  duration?: {
-    weeks: number;
-    cyclePattern?: string;
-  };
-  instructions?: string[];
+export type ProtocolScheduleType = 'daily' | 'weekly' | 'custom' | 'every_other_day';
+
+export interface ProtocolScheduleConfig {
+  days?: string[]; // ['monday', 'wednesday', 'friday']
+  times?: string[]; // ['morning', 'evening']
+  time?: string; // 'bedtime'
+  notes?: string;
+}
+
+export interface ProtocolTemplate {
+  id: string;
+  peptideId: string;
+  name: string;
+  weeklyTarget?: number;
+  dailyTarget?: number;
+  scheduleType: ProtocolScheduleType;
+  scheduleConfig: ProtocolScheduleConfig;
+  templateName: string;
+  peptideName: string;
+  peptideCategory: PeptideCategory;
 }
 
 export interface WellnessMetric {
@@ -209,4 +226,209 @@ export interface WeeklySummaryData {
   missedDoses: Date[];
   adherenceScore: number;
   weeklyTrend: 'improving' | 'declining' | 'stable';
+}
+
+// Weekly progress types for protocols
+export interface ProtocolProgress {
+  protocol: Protocol;
+  peptide: Peptide;
+  currentDose: number;
+  targetDose: number;
+  progressPercentage: number;
+  remainingDose: number;
+  status: 'on_track' | 'behind' | 'ahead' | 'complete';
+  daysRemaining: number;
+  suggestedNextDose?: number;
+  lastInjectionDate?: Date;
+  weeklyInjections: Injection[];
+}
+
+export interface WeeklyProgressData {
+  weekStart: Date;
+  weekEnd: Date;
+  protocolProgresses: ProtocolProgress[];
+  overallProgress: number;
+  totalActiveProtocols: number;
+  onTrackProtocols: number;
+  behindProtocols: number;
+}
+
+export interface WeeklyProgressTrend {
+  weekStart: Date;
+  totalProgress: number;
+  protocolCount: number;
+  adherenceScore: number;
+}
+
+// Alert and notification types
+export type AlertType =
+  | 'dose_limit_warning'
+  | 'dose_limit_exceeded'
+  | 'missed_dose'
+  | 'site_rotation_reminder'
+  | 'protocol_milestone'
+  | 'protocol_complete'
+  | 'week_summary';
+
+export type AlertSeverity = 'info' | 'warning' | 'error' | 'success';
+
+export interface Alert {
+  id: string;
+  userId: string;
+  alertType: AlertType;
+  severity: AlertSeverity;
+  title: string;
+  message: string;
+  actionText?: string;
+  actionUrl?: string;
+  metadata?: {
+    protocolId?: string;
+    peptideId?: string;
+    injectionId?: string;
+    threshold?: number;
+    currentValue?: number;
+    targetValue?: number;
+    suggestion?: string;
+  };
+  isRead: boolean;
+  isDismissed: boolean;
+  expiresAt?: Date;
+  createdAt: Date;
+}
+
+export interface NotificationPreferences {
+  doseLimit: {
+    enabled: boolean;
+    threshold: number; // percentage (default 90)
+    deliveryMethods: NotificationMethod[];
+  };
+  missedDose: {
+    enabled: boolean;
+    gracePeriodHours: number; // default 6
+    deliveryMethods: NotificationMethod[];
+  };
+  siteRotation: {
+    enabled: boolean;
+    maxConsecutiveUses: number; // default 3
+    deliveryMethods: NotificationMethod[];
+  };
+  protocolMilestones: {
+    enabled: boolean;
+    milestones: number[]; // [25, 50, 75, 100]
+    deliveryMethods: NotificationMethod[];
+  };
+  quietHours: {
+    enabled: boolean;
+    startTime: string; // "22:00"
+    endTime: string; // "08:00"
+  };
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+}
+
+export type NotificationMethod = 'in_app' | 'push' | 'email';
+
+export interface InjectionSiteUsage {
+  location: InjectionLocation;
+  side: 'left' | 'right' | 'center';
+  lastUsed: Date;
+  consecutiveUses: number;
+  totalUses: number;
+  daysSinceLastUse: number;
+}
+
+export interface DoseAlertContext {
+  protocol: Protocol;
+  peptide: Peptide;
+  currentWeeklyDose: number;
+  targetWeeklyDose: number;
+  progressPercentage: number;
+  daysRemaining: number;
+  threshold: number;
+}
+
+export interface MissedDoseContext {
+  protocol: Protocol;
+  peptide: Peptide;
+  expectedDate: Date;
+  hoursOverdue: number;
+  lastInjectionDate?: Date;
+  gracePeriodExpired: boolean;
+}
+
+// Analytics Types
+export interface ProtocolAdherenceData {
+  protocolId: string;
+  protocolName: string;
+  peptideName: string;
+  adherencePercentage: number;
+  totalPlannedDoses: number;
+  actualDoses: number;
+  missedDoses: number;
+  streakDays: number;
+  longestStreak: number;
+  averageTimeBetweenDoses: number;
+  doseConsistencyScore: number;
+}
+
+export interface InjectionSiteAnalytics {
+  location: InjectionLocation;
+  side: 'left' | 'right' | 'center';
+  usageCount: number;
+  usagePercentage: number;
+  lastUsed: Date;
+  daysSinceLastUse: number;
+  recommendedRotation: boolean;
+  overused: boolean;
+}
+
+export interface TimingPatternAnalytics {
+  optimalTimeWindow: {
+    start: string;
+    end: string;
+  };
+  consistencyScore: number;
+  averageTime: string;
+  mostCommonTimes: {
+    time: string;
+    count: number;
+  }[];
+  dayOfWeekPatterns: {
+    day: string;
+    averageTime: string;
+    consistency: number;
+  }[];
+}
+
+export interface DoseVarianceAnalytics {
+  targetDose: number;
+  averageDose: number;
+  variance: number;
+  standardDeviation: number;
+  accuracyPercentage: number;
+  highVarianceDates: Date[];
+  trend: 'stable' | 'increasing' | 'decreasing';
+}
+
+export interface ComprehensiveAnalytics {
+  dateRange: {
+    start: Date;
+    end: Date;
+  };
+  protocolAdherence: ProtocolAdherenceData[];
+  injectionSites: InjectionSiteAnalytics[];
+  timingPatterns: TimingPatternAnalytics;
+  doseVariance: DoseVarianceAnalytics[];
+  keyInsights: string[];
+  recommendations: string[];
+}
+
+export interface AnalyticsFilters {
+  dateRange?: {
+    start: Date;
+    end: Date;
+  };
+  protocolIds?: string[];
+  peptideIds?: string[];
+  reportType?: 'weekly' | 'monthly' | 'quarterly' | 'custom';
 }

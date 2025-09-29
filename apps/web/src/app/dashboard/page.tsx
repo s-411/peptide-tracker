@@ -4,6 +4,9 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { DatabaseService } from '@/lib/database';
 import { WeeklySummaryWidget } from '@/components/dashboard/WeeklySummaryWidget';
+import { WeeklyProgressWidget } from '@/components/dashboard/WeeklyProgressWidget';
+import { AlertsWidget } from '@/components/dashboard/AlertsWidget';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -46,11 +49,24 @@ export default async function DashboardPage() {
               History
             </Link>
             <Link
+              href="/dashboard/protocols"
+              className="text-gray hover:text-white transition-colors"
+            >
+              Protocols
+            </Link>
+            <Link
+              href="/dashboard/analytics"
+              className="text-gray hover:text-white transition-colors"
+            >
+              Analytics
+            </Link>
+            <Link
               href="/profile"
               className="text-gray hover:text-white transition-colors"
             >
               Profile
             </Link>
+            <NotificationBell userId={userRecord.id} />
             <UserButton
               appearance={{
                 elements: {
@@ -67,9 +83,15 @@ export default async function DashboardPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
-        {/* Weekly Summary Widget */}
-        <div className="mb-8">
+        {/* Dashboard Widgets */}
+        <div className="grid gap-6 lg:grid-cols-2 mb-8">
           <WeeklySummaryWidget userId={userRecord.id} />
+          <WeeklyProgressWidget userId={userRecord.id} />
+        </div>
+
+        {/* Alerts Widget */}
+        <div className="mb-8">
+          <AlertsWidget userId={userRecord.id} />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
