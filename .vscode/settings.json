@@ -25,5 +25,25 @@
   "emmet.includeLanguages": {
     "typescript": "html",
     "typescriptreact": "html"
-  }
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#ff645a",
+    "activityBar.background": "#ff645a",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#00ff0f",
+    "activityBarBadge.foreground": "#15202b",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#ff645a",
+    "statusBar.background": "#ff3427",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#ff645a",
+    "statusBarItem.remoteBackground": "#ff3427",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#ff3427",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#ff342799",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#ff3427"
 }
